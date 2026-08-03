@@ -38,4 +38,13 @@ class InvoiceController extends Controller
         $invoice = Invoice::with(['client', 'lines.service'])->findOrFail($id);
         return response()->json($invoice);
     }
+
+    public function generatePDF($id)
+    {
+        $invoice = Invoice::with(['client', 'lines.service'])->findOrFail($id);
+
+        $pdf = \PDF::loadView('invoices.pdf', compact('invoice'));
+
+        return $pdf->download('invoice_' . $invoice->id . '.pdf');
+    }
 }

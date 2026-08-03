@@ -14,6 +14,8 @@ class InvoiceLine extends Model
         'hours',
     ];
 
+    protected $appends = ['subtotal'];
+
     public function invoice(): BelongsTo
     {
         return $this->belongsTo(Invoice::class);
@@ -22,5 +24,10 @@ class InvoiceLine extends Model
     public function service(): BelongsTo
     {
         return $this->belongsTo(Service::class);
+    }
+
+    public function getSubtotalAttribute(): float
+    {
+        return $this->hours * $this->price;
     }
 }

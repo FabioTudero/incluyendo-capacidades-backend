@@ -27,7 +27,7 @@ class Invoice extends Model
 
     public function getTotalAttribute(): float
     {
-        return $this->lines->sum('price');
+        return $this->lines->sum(fn (InvoiceLine $line) => $line->hours * $line->price);
     }
 
     public function getTotalHoursAttribute(): float
