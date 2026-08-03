@@ -10,6 +10,7 @@ Route::get('/clients', [ClientController::class, 'index']);
 Route::post('/clients', [ClientController::class, 'store']);
 Route::get('/clients/{id}', [ClientController::class, 'show']);
 Route::put('/clients/{id}', [ClientController::class, 'update']);
+Route::get('/clients/{id}/invoices', [ClientController::class, 'invoices']);
 
 Route::get('/services', [ServicesController::class, 'index']);
 Route::post('/services', [ServicesController::class, 'store']);

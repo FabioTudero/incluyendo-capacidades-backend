@@ -30,6 +30,13 @@ class ClientController extends Controller
         return response()->json($client);
     }
 
+    public function invoices($id)
+    {
+        $client = Client::findOrFail($id);
+
+        return response()->json($client->invoices()->with('lines')->get());
+    }
+
     public function update(Request $request, $id)
     {
         $client = Client::findOrFail($id);
