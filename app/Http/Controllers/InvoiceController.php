@@ -1,0 +1,41 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Invoice;
+
+class InvoiceController extends Controller
+{
+    public function index()
+    {
+        return response()->json(Invoice::with(['client', 'lines'])->get());
+    }
+
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'client_id' => 'required|exists:clients,id',
+            'date' => 'required|date',
+            'lines' => 'required|array|min:1',
+            'lines.*.service_id' => 'required|exists:services,id',
+            'lines.*.price' => 'required|numeric|min:0',
+            'lines.*.hours' => 'required|numeric|min:0',
+        ]);
+
+        $invoice = Invoice::create([
+            'client_id' => $validatedData['client_id'],
+            'date' => $validatedData['date'],
+        ]);
+
+        $invoice->lines()->createMany($validatedData['lines']);
+
+        return response()->json($invoice->load(['client', 'lines.service']), 201);
+    }
+
+    public function show($id)
+    {
+        $invoice = Invoice::with(['client', 'lines.service'])->findOrFail($id);
+        return response()->json($invoice);
+    }
+}

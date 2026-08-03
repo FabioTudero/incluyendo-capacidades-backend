@@ -3,7 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClientController;
-use App\Http\Controllers\ServicesController; 
+use App\Http\Controllers\ServicesController;
+use App\Http\Controllers\InvoiceController;
 
 Route::get('/clients', [ClientController::class, 'index']);
 Route::post('/clients', [ClientController::class, 'store']);
@@ -17,3 +18,7 @@ Route::put('/services/{id}', [ServicesController::class, 'update']);
 
 Route::post('/services/{service_id}/clients/{client_id}', [ServicesController::class, 'add_service_to_client']);
 Route::delete('/services/{service_id}/clients/{client_id}', [ServicesController::class, 'remove_service_from_client']);
+
+Route::get('/invoices', [InvoiceController::class, 'index']);
+Route::post('/invoices', [InvoiceController::class, 'store']);
+Route::get('/invoices/{id}', [InvoiceController::class, 'show']);
