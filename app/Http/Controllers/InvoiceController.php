@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\InvoiceMail;
 use App\Models\Invoice;
 
 class InvoiceController extends Controller
@@ -29,8 +32,15 @@ class InvoiceController extends Controller
         ]);
 
         $invoice->lines()->createMany($validatedData['lines']);
+        $invoice->load(['client', 'lines.service']);
 
-        return response()->json($invoice->load(['client', 'lines.service']), 201);
+        try {
+            Mail::to($invoice->client->email)->send(new InvoiceMail($invoice));
+        } catch (\Throwable $e) {
+            Log::error('No se pudo enviar la factura #' . $invoice->id . ' por correo: ' . $e->getMessage());
+        }
+
+        return response()->json($invoice, 201);
     }
 
     public function show($id)
